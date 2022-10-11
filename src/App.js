@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
 
 const MovieForm = (props) => {
@@ -10,7 +10,6 @@ const MovieForm = (props) => {
   const [plot, setPlot] = useState("");
   const [imbd, setImbd] = useState(0);
   const [year, setYear] = useState(0);
-  console.log(title);
   // this is the function that is called when the form is submitted
   //using all of the set functions to set the state of the variables when the input is changed (onChange)event={e => setTitle(e.target.value)}
   return (
@@ -70,18 +69,71 @@ const MovieForm = (props) => {
       <p>Current Plot: {plot}</p>
       <p>Current Imbd Rating: {imbd}</p>
       <p>Current Year: {year}</p>
+      <button
+        onClick={() => {
+          const newMovie = {
+            title,
+            director,
+            actor,
+            plot,
+            imbd,
+            year,
+          };
+          console.log(newMovie);
+          props.handleAddMovie(newMovie);
+        }}
+      >
+        Add Movie
+      </button>
+      <br />
+      <label for='movies'>Movie List: </label>
+      <select className='movie-select' name='movies'>
+        {/* {props.movieList.map((title, index) => {
+          return <option value={title}>{title}</option>;
+          // <option key={index} value={title}>
+          //   {title}
+          // </option>
+        })} */}
+      </select>
+    </div>
+  );
+};
+
+const MoviesDisplay = (props) => {
+  return (
+    <div>
+      {props.movieList.map((movie, index) => {
+        return <MovieItem movie={movie} key={index} />;
+      })}
+    </div>
+  );
+};
+
+const MovieItem = (props) => {
+  return (
+    <div>
+      <h2>Title: {props.movie.title}</h2>
+      <p>Director: {props.movie.director}</p>
+      <p>Actors: {props.movie.actor}</p>
+      <p>Plot: {props.movie.plot}</p>
+      <p>IMDB Rating: {props.movie.imbd}</p>
+      <p>Year: {props.movie.year}</p>
     </div>
   );
 };
 
 function App() {
   const [movieList, setMovieList] = useState([]);
-  const handleAddMovie = (newMovie) => {};
+  const handleAddMovie = (newMovie) => {
+    setMovieList([...movieList, newMovie]);
+  };
+  console.log(movieList);
   return (
     <div className='App'>
       <h1>Movie Form</h1>
       <header className='App-header'>
-        <MovieForm />
+        <MovieForm handleAddMovie={handleAddMovie} movieList={movieList} />
+        <MoviesDisplay movieList={movieList} />
       </header>
     </div>
   );
